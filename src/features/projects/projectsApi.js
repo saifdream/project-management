@@ -52,7 +52,7 @@ export const projectsApi = apiSlice.injectEndpoints({
             }
         }),
         editProject: builder.mutation({
-            query: ({id, member, data}) => ({
+            query: ({id, member, prevType, data}) => ({
                 url: `/projects/${id}`,
                 method: "PATCH",
                 body: data
@@ -63,8 +63,13 @@ export const projectsApi = apiSlice.injectEndpoints({
                         "getProjects",
                         arg.member,
                         draft => {
-                            const draftProject = draft.data.projects.find(t => t.id == arg.id);
+                            const draftProject = draft.projects.find(t => t.id == arg.id);
+                            draftProject.type = arg.data.type;
                             draftProject.teamId = arg.data.teamId;
+                            if(arg.prevType !== arg.data.type) {
+                                draft.projectCounter[arg.prevType] -= 1;
+                                draft.projectCounter[arg.data.type] += 1;
+                            }
                         }
                     )
                 )

@@ -1,12 +1,48 @@
 import moment from "moment";
+import { useDrag } from"react-dnd";
+import { useSelector } from "react-redux";
+import { useEditProjectMutation } from "../../features/projects/projectsApi";
+import { ItemTypes } from "./ItemTypes";
 
 export default function Project({project}) {
     const {id, type, team, title, author, teamId, timestamp} = project;
+    
+    const { user: loggedInUser } = useSelector((state) => state.auth) || {};
+    const { email: currentUserEmail } = loggedInUser || {};
 
+    const [editProject, { isSuccess, isLoading, isError, error }] = useEditProjectMutation();
+    const [{ opacity }, drag] = useDrag(
+        () => ({
+          type: ItemTypes.Project,
+          item: project,
+          end(item, monitor) {
+            const dropResult = monitor.getDropResult()
+            if (item && dropResult) {
+              const isDropAllowed = dropResult.allowedDropEffect === 'move';
+              if (isDropAllowed) {
+                editProject({
+                    id,
+                    member: currentUserEmail,
+                    team,
+                    prevType: type,
+                    data: {
+                        type: dropResult.type,
+                    },
+                });
+              }
+            }
+          },
+          collect: (monitor) => ({
+            opacity: monitor.isDragging() ? 0.4 : 1,
+          }),
+        }),
+        [id],
+    )
     return (
         <div
             className="relative flex flex-col items-start p-4 mt-3 bg-white rounded-lg cursor-pointer bg-opacity-90 group hover:bg-opacity-100"
             draggable="true"
+            ref={drag} style={{ opacity }}
         >
             {
                 type === "BackLog" && (

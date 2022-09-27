@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useMatch } from "react-router-dom";
 import logoImage from "../../assets/images/lws-logo-light.svg";
 import { userLoggedOut } from "../../features/auth/authSlice";
+import { setSearchText } from "../../features/search/searchSlice";
 
 export default function Navigation() {
     const {user} = useSelector((state) => state.auth) || {};
@@ -9,10 +11,33 @@ export default function Navigation() {
     const dispatch = useDispatch();
     const match = useMatch("/projects");
 
+    useEffect(() => {
+        // setSearch(searchText);
+        return() => dispatch(setSearchText(""))
+    }, [])
+
     const logout = () => {
         dispatch(userLoggedOut());
         localStorage.clear();
     };
+
+    const debounceHandler = (fn, delay) => {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                fn(...args);
+            }, delay);
+        };
+    };
+
+    const doSearch = (value) => {
+        // setSearch(value);
+        dispatch(setSearchText(value));
+    };
+
+    const handleSearch = debounceHandler(doSearch, 500);
+
     return (
         <div className="flex items-center flex-shrink-0 w-full h-16 px-10 bg-white bg-opacity-75">
             <img
@@ -25,6 +50,9 @@ export default function Navigation() {
                     className="flex items-center h-10 px-4 ml-10 text-sm bg-gray-200 rounded-full focus:outline-none focus:ring"
                     type="search"
                     placeholder="Search for anything…"
+                    onChange={(e) =>
+                        handleSearch(e.target.value)
+                    }
                 />
             }
             <div className="ml-10">

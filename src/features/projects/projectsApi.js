@@ -92,8 +92,18 @@ export const projectsApi = apiSlice.injectEndpoints({
                         "getProjects",
                         arg.author,
                         draft => {
-                            draft.data.projects.find(t => t.id != arg.id);
-                            draft.projectCounter[arg.type] -= 1;
+                            const projectCounter = {...draft.projectCounter};
+                            projectCounter[arg.type] -= 1;
+
+                            return {
+                                projects: [
+                                    ...draft.projects.filter(p => {
+                                        console.log(p.id, arg.id)
+                                        return p.id !== arg.id;
+                                    })
+                                ],
+                                projectCounter
+                            };
                         }
                     )
                 )

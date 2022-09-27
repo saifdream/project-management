@@ -19,10 +19,16 @@ export default function ProjectModal({ open, control }) {
         },
     });
 
+    const init = () => {
+        setTitle("");
+        setTeam("");
+    }
+
     const [addProject, { isSuccess, isLoading, isError, error }] = useAddProjectMutation();
 
     useEffect(() => {
         if (isSuccess) {
+            init();
             control();
         }
     }, [isSuccess]);
@@ -84,7 +90,6 @@ export default function ProjectModal({ open, control }) {
                                     onChange={(e) => setTeam(e.target.value)}
                                 >
                                     <option value="">Choose a team</option>
-                                    {/* <option value="gray">Gray</option> */}
                                     {
                                         teams.map((team) => <option key={team.id} value={team.id}>{team.name}</option>)
                                     }

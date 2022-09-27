@@ -42,8 +42,8 @@ export const teamsApi = apiSlice.injectEndpoints({
                         "getTeams",
                         arg.member,
                         draft => {
-                            const draftTeam = draft.data.find(t => t.id == arg.id);
-                            draftTeam = arg.data;
+                            const draftTeam = draft.find(t => t.id == arg.id);
+                            draftTeam.members = arg.data;
                         }
                     )
                 )
@@ -56,7 +56,7 @@ export const teamsApi = apiSlice.injectEndpoints({
             }
         }),
         removeTeam: builder.mutation({
-            query: ({id}) => ({
+            query: ({id, author}) => ({
                 url: `/teams/${id}`,
                 method: "DELETE"
             }),
@@ -66,7 +66,7 @@ export const teamsApi = apiSlice.injectEndpoints({
                         "getTeams",
                         arg.author,
                         draft => {
-                            draft.data.find(t => t.id != arg.id);
+                            return draft.filter(t => t.id != arg.id );
                         }
                     )
                 )

@@ -12,8 +12,15 @@ export default function TeamModal({ open, control }) {
 
     const [addTeam, { isSuccess, isLoading, isError, error }] = useAddTeamMutation();
 
+    const init = () => {
+        setTeamName("");
+        setDescription("");
+        setColor("");
+    };
+
     useEffect(() => {
         if (isSuccess) {
+            init();
             control();
         }
     }, [isSuccess]);

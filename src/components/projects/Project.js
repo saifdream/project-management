@@ -1,12 +1,14 @@
 import moment from "moment";
+import { memo } from "react";
 import { useDrag } from"react-dnd";
 import { useSelector } from "react-redux";
 import { useEditProjectMutation } from "../../features/projects/projectsApi";
+import MoreMenu from "../MoreMenu";
 import { ItemTypes } from "./ItemTypes";
 
-export default function Project({project}) {
+function Project({project}) {
     const {id, type, team, title, author, teamId, timestamp} = project;
-    
+    const search = useSelector((state) => state.search.search);
     const { user: loggedInUser } = useSelector((state) => state.auth) || {};
     const { email: currentUserEmail } = loggedInUser || {};
 
@@ -19,7 +21,7 @@ export default function Project({project}) {
             const dropResult = monitor.getDropResult()
             if (item && dropResult) {
               const isDropAllowed = dropResult.allowedDropEffect === 'move';
-              if (isDropAllowed) {
+              if (isDropAllowed && dropResult.type !== type) {
                 editProject({
                     id,
                     member: currentUserEmail,
@@ -37,27 +39,19 @@ export default function Project({project}) {
           }),
         }),
         [id],
-    )
+    );
+
+    // console.log("Project", id)
+
     return (
         <div
-            className="relative flex flex-col items-start p-4 mt-3 bg-white rounded-lg cursor-pointer bg-opacity-90 group hover:bg-opacity-100"
+            className={`relative flex flex-col items-start p-4 mt-3 bg-white rounded-lg cursor-pointer bg-opacity-90 group hover:bg-opacity-100 ${search && title.match(search) && "border-4 border-indigo-500"}`}
             draggable="true"
             ref={drag} style={{ opacity }}
         >
             {
                 type === "BackLog" && (
-                    <button className="absolute top-0 right-0 flex items-center justify-center hidden w-5 h-5 mt-3 mr-2 text-gray-500 rounded hover:bg-gray-200 hover:text-gray-700 group-hover:flex">
-                        <svg
-                            className="w-4 h-4 fill-current"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                        >
-                            <path
-                                d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
-                            />
-                        </svg>
-                    </button>
+                    <MoreMenu id={id} routeType="Project" author={author} stateType={type} />
                 )
             }
             <span
@@ -66,6 +60,15 @@ export default function Project({project}) {
                 {team?.name}
             </span>
             <h4 className="mt-3 text-sm font-medium">{title}</h4>
+            {
+                isLoading && (
+                    <div className="flex justify-center items-center m-auto">
+                        <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                )
+            }
             <div
                 className="flex items-center w-full mt-3 text-xs font-medium text-gray-400"
             >
@@ -93,3 +96,5 @@ export default function Project({project}) {
         </div>
     )
 }
+
+export default memo(Project);

@@ -1,26 +1,16 @@
-import gravatarUrl from "gravatar-url";
 import moment from "moment";
-export default function Team({team}) {
+import { memo } from "react";
+import MoreMenu from "../MoreMenu";
+function Team({team}) {
     const {id, name, description, author, members, color, timestamp} = team;
+    // console.log("Team", id)
+    
     return (
         <div
             className="relative flex flex-col items-start p-4 mt-3 bg-white rounded-lg cursor-pointer bg-opacity-90 group hover:bg-opacity-100"
             draggable="true"
         >
-            <button
-                className="absolute top-0 right-0 flex items-center justify-center hidden w-5 h-5 mt-3 mr-2 text-gray-500 rounded hover:bg-gray-200 hover:text-gray-700 group-hover:flex"
-            >
-                <svg
-                    className="w-4 h-4 fill-current"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                >
-                    <path
-                        d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
-                    />
-                </svg>
-            </button>
+            <MoreMenu id={id} routeType="Team" author={author} />
             <span
                 className={`flex items-center h-6 px-3 text-xs font-semibold text-${color}-500 bg-${color}-100 rounded-full`}
             >
@@ -44,23 +34,10 @@ export default function Team({team}) {
                         />
                     </svg>
                     <span className="ml-1 leading-none">{moment(timestamp).format("MMM DD")}</span>
-                    {/* <div className="ml-1">
-                        <div className="flex flex-row">
-                        {
-                            members.map((m, index) => (
-                                <img
-                                    key={m}
-                                    className="object-cover w-5 h-5 rounded-full"
-                                    // src={gravatarUrl(members[0], { size: 80 })}
-                                    src={'https://random.imagecdn.app/500/150'}
-                                    alt={m}
-                                />
-                            ))
-                        }
-                        </div>
-                    </div> */}
                 </div>
             </div>
         </div>
     )
 }
+
+export default memo(Team);

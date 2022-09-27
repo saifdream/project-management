@@ -151,6 +151,26 @@ function AssignModal({ open, control, id, currentUserEmail }) {
                         {isUserCheckError && <Error message={userCheckerror} />}
                         {responseError && <Error message={responseError} />}
                     </form>
+
+                    <div className="flex justify-center">
+                        <div className="block p-6 shadow-lg bg-white max-w-sm">
+                            <h5 className="text-gray-900 text-md leading-tight font-medium mb-4">Already in the Team</h5>
+                            <div className="flex justify-center">
+                                <ul className="bg-white border border-gray-200 w-96 text-gray-900">
+                                {
+                                    team && team.members.map(email => (
+                                        <li 
+                                            key={email}
+                                            className="px-6 py-2 border-b border-gray-200 w-full"
+                                        >
+                                            {email}
+                                        </li>
+                                    ) )
+                                }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         )

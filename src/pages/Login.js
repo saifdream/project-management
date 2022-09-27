@@ -4,13 +4,21 @@ import logoImage from "../assets/images/lws-logo-light.svg";
 import Error from "../components/ui/Error";
 import { useLoginMutation } from "../features/auth/authApi";
 
+const users = [
+    { email: 'dev@gmail.com', password: '1234' },
+    { email: 'design@gmail.com', password: '1234' },
+    { email: 'abdul@gmail.com', password: '1234' },
+    { email: 'saif@gmail.com', password: '1234' },
+    { email: 'analysis@gmail.com', password: '1234' },
+    { email: 'saif89.2012@gmail.com', password: '1234' },
+]
+
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
-    const [login, { data, isLoading, error: responseError }] =
-        useLoginMutation();
+    const [login, { data, isLoading, error: responseError }] = useLoginMutation();
 
     const navigate = useNavigate();
 
@@ -102,6 +110,16 @@ export default function Login() {
                             </div>
                         </div>
 
+                        {
+                            isLoading && (
+                                <div className="flex justify-center items-center">
+                                    <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            )
+                        }
+
                         <div>
                             <button
                                 type="submit"
@@ -114,6 +132,29 @@ export default function Login() {
 
                         {error !== "" && <Error message={error} />}
                     </form>
+                    <div className="flex justify-center">
+                        <div className="block p-6 rounded-lg shadow-lg bg-white max-w-sm">
+                            <h5 className="text-gray-900 text-xl leading-tight font-medium mb-2">Demo Users</h5>
+                            <div className="flex justify-center">
+                                <ul className="bg-white rounded-lg border border-gray-200 w-96 text-gray-900">
+                                {
+                                    users.map(user => (
+                                        <li 
+                                            key={user.email}
+                                            className="px-6 py-2 border-b border-gray-200 w-full cursor-pointer"
+                                            onClick={() => {
+                                                setEmail(user.email);
+                                                setPassword(user.password);
+                                            }}
+                                        >
+                                            {user.email} - {user.password}
+                                        </li>
+                                    ) )
+                                }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

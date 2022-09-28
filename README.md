@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
+Live link [https://zingy-figolla-409c47.netlify.app](https://zingy-figolla-409c47.netlify.app) to view it in your browser.
+
 ## Available Scripts
 
 In the project directory, you can run:
